@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="board">
+
+    <!--<!–- 쿼리문 작성 &ndash;&gt;-->
+    <!--insert 쿼리-->
+    <!--<resultMap id="resultMapList" type="kr.co.bit.vo.BoardVO">-->
+    <!--<result column="date" property="reg_date"></result>-->
+
+    <!--</resultMap>-->
+
+    <select id="getList" resultType="kr.co.bit.vo.BoardVO">
+        <![CDATA[
+             SELECT b.no, b.title, b.content, b.REG_DATE, b.USER_NO, b.hit, u.name
+             from BOARD1 b, USERS u
+             WHERE b.USER_NO = u.NO
+             ORDER BY b.NO DESC
+        ]]>
+    </select>
+
+    <select id="find" resultType="kr.co.bit.vo.BoardVO">
+        <![CDATA[
+           select *.t from t
+            (SELECT b.no, b.TITLE,b.CONTENT,b.REG_DATE,b.USER_NO,b.HIT,u.NAME
+            from BOARD1 b,users u
+            WHERE b.user_no = u.NO) t
+            where b.title LIKE %#{kwd}%
+            OR b.content LIKE %#{kwd}%
+        ]]>
+
+    </select>
+
+    <insert id="write" parameterType="map">
+        <![CDATA[
+         insert INTO BOARD1 VALUES (SEQ_BOARD_NO.nextval,#{title},#{content},1,CURRENT_DATE ,#{no})
+        ]]>
+
+    </insert>
+
+    <update id="modify" parameterType="kr.co.bit.vo.BoardVO">
+        <![CDATA[
+            UPDATE BOARD1 set TITLE = #{title}, CONTENT=#{content} where no=#{no}
+        ]]>
+
+    </update>
+
+    <select id="view" parameterType="int" resultType="kr.co.bit.vo.BoardVO">
+        <![CDATA[
+            SELECT * from BOARD1 WHERE no = #{no}
+        ]]>
+
+    </select>
+
+    <select id="view_content" parameterType="int" resultType="String">
+        <![CDATA[
+          SELECT content FROM BOARD1 WHERE no =#{no}
+        ]]>
+    </select>
+
+    <update id="view_cnt" parameterType="int">
+        <![CDATA[
+
+          UPDATE BOARD1
+          set hit = hit +1
+          WHERE no = #{no}
+
+        ]]>
+
+    </update>
+    <delete id="delete" parameterType="int">
+        <![CDATA[
+
+
+
+          DELETE FROM BOARD1 WHERE NO = #{no}
+
+
+
+        ]]>
+    </delete>
+</mapper>
